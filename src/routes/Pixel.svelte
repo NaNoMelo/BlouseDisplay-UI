@@ -1,27 +1,11 @@
 <script lang="ts">
-	import ColorPicker from 'svelte-awesome-color-picker';
-
 	let hex: string = '#000000'; // Default color
-	let showPicker: boolean = false;
-
-	function selectPixel() {
-		showPicker = true;
-	}
-
-	function closePicker() {
-		showPicker = false;
-	}
-
+	let selected: boolean = false;
 	export { hex as color };
+	export { selected };
 </script>
 
-<button class="pixel" on:click={selectPixel} on:blur={closePicker} style="background-color: {hex};">
-	{#if showPicker}
-		<div class="picker-container">
-			<ColorPicker bind:hex isDialog={false} />
-		</div>
-	{/if}
-</button>
+<div class="pixel" style="background-color: {hex};" class:selected></div>
 
 <style>
 	.pixel {
@@ -31,8 +15,7 @@
 		cursor: pointer;
 	}
 
-	/*.picker-container {
-		position: absolute;
-		z-index: 1000;
-	}*/
+	.pixel.selected {
+		border: 3px solid red; /* Change border to indicate selection */
+	}
 </style>
