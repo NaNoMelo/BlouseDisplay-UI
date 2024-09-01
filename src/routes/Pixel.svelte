@@ -1,11 +1,21 @@
 <script lang="ts">
 	let hex: string = '#000000'; // Default color
-	let selected: boolean = false;
 	export { hex as color };
-	export { selected };
+	export let selectedX: number;
+	export let selectedY: number;
+	export let x: number;
+	export let y: number;
 </script>
 
-<div class="pixel" style="background-color: {hex};" class:selected></div>
+<button
+	class="pixel {selectedX === x && selectedY === y ? 'selected' : ''}"
+	style="background-color: {hex};"
+	on:click={() => {
+		selectedX = x;
+		selectedY = y;
+		console.log(`Selected pixel: (${selectedX}, ${selectedY}) with color ${hex}`);
+	}}
+></button>
 
 <style>
 	.pixel {

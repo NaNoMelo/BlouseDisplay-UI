@@ -1,9 +1,15 @@
 <script lang="ts">
+	import ColorPicker from 'svelte-awesome-color-picker';
+
 	let x = 0;
 	let y = 0;
 
 	let cols = 32;
 	let rows = 16;
+
+	let color = '#000000';
+
+	let timeout: boolean = false;
 
 	export { x as selectedX, y as selectedY };
 	export { cols, rows };
@@ -31,6 +37,15 @@
 		x++;
 		x %= cols;
 	}
+
+	function handleConfirm() {
+		console.log(`Selected pixel: (${x}, ${y}) with color ${color}`);
+
+		timeout = true;
+		setTimeout(() => {
+			timeout = false;
+		}, 1000);
+	}
 </script>
 
 <div class="container">
@@ -38,6 +53,8 @@
 	<button class="button left" on:click={handleLeft}>LEFT</button>
 	<button class="button right" on:click={handleRight}>RIGHT</button>
 	<button class="button down" on:click={handleDown}>DOWN</button>
+
+	<button class="button confirm" on:click={handleConfirm} disabled={timeout}>CONFIRM</button>
 
 	<div class="input-container x">
 		<label for="x">x:</label>
@@ -48,17 +65,29 @@
 		<label for="y">y:</label>
 		<input type="number" id="y" bind:value={y} min="0" max={rows} step="1" />
 	</div>
+
+	<div class="picker">
+		<ColorPicker bind:hex={color} isDialog={false} --picker-height="100px" --picker-width="130px" />
+	</div>
+
+	<div class="color" style="--color:{color};"></div>
+
+	<div class="input-container">
+		<label for="timeout">{Date}</label>
+	</div>
 </div>
 
 <style>
 	.container {
 		display: grid;
 		grid-template-areas:
-			'up left right'
-			'down x y';
+			'up left right '
+			'down x y'
+			'picker picker color'
+			'picker picker confirm'
+			'picker picker timeout';
 		gap: 10px;
-		justify-content: center;
-		align-items: center;
+		width: 300px;
 	}
 
 	.button {
@@ -75,6 +104,11 @@
 
 	.button:active {
 		background-color: #007acc;
+	}
+
+	.button:disabled {
+		background-color: #ccc;
+		cursor: not-allowed;
 	}
 
 	.input-container {
@@ -115,5 +149,22 @@
 	}
 	.y {
 		grid-area: y;
+	}
+
+	.picker {
+		grid-area: picker;
+	}
+
+	.color {
+		grid-area: color;
+		height: 50px;
+		width: 50px;
+		border: #404040 2px solid;
+		border-radius: 10px;
+		background-color: var(--color);
+	}
+
+	.confirm {
+		grid-area: confirm;
 	}
 </style>

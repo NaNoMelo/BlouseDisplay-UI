@@ -6,6 +6,7 @@
 	let grid: string[][] = Array(rows).fill(Array(cols).fill('#000000'));
 	let selectedX: number = 0;
 	let selectedY: number = 0;
+
 	export { cols, rows, grid, selectedX, selectedY };
 </script>
 
@@ -14,11 +15,7 @@
 		{#each grid as row, rowIndex}
 			<div class="row">
 				{#each row as color, colIndex}
-					{#if rowIndex === selectedY && colIndex === selectedX}
-						<Pixel {color} selected={true} />
-					{:else}
-						<Pixel {color} />
-					{/if}
+					<Pixel bind:selectedX bind:selectedY {color} x={colIndex} y={rowIndex} />
 				{/each}
 			</div>
 		{/each}
