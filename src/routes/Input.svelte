@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import ColorPicker from 'svelte-awesome-color-picker';
+	import type { PageData } from './$types';
+	import CountDown from './CountDown.svelte';
 
 	let x = 0;
 	let y = 0;
@@ -8,11 +11,21 @@
 	let rows = 16;
 
 	let color = '#000000';
-
-	let timeout: boolean = false;
+	$: color = color.toUpperCase().slice(0, 7);
 
 	export { x as selectedX, y as selectedY };
 	export { cols, rows };
+	export let data: PageData;
+
+	let isDisabled = false;
+	$: isDisabled = data.lastPixel + data.timeout >= Date.now();
+	const interval = setInterval(() => {
+		isDisabled = data.lastPixel + data.timeout >= Date.now();
+	}, 1000);
+
+	onDestroy(() => {
+		clearInterval(interval);
+	});
 
 	function handleUp() {
 		y--;
@@ -37,45 +50,37 @@
 		x++;
 		x %= cols;
 	}
-
-	function handleConfirm() {
-		console.log(`Selected pixel: (${x}, ${y}) with color ${color}`);
-
-		timeout = true;
-		setTimeout(() => {
-			timeout = false;
-		}, 1000);
-	}
 </script>
 
-<div class="container">
-	<button class="button up" on:click={handleUp}>UP</button>
-	<button class="button left" on:click={handleLeft}>LEFT</button>
-	<button class="button right" on:click={handleRight}>RIGHT</button>
-	<button class="button down" on:click={handleDown}>DOWN</button>
+<form method="POST" class="container">
+	<button type="button" class="button up" on:click={handleUp}>UP</button>
+	<button type="button" class="button left" on:click={handleLeft}>LEFT</button>
+	<button type="button" class="button right" on:click={handleRight}>RIGHT</button>
+	<button type="button" class="button down" on:click={handleDown}>DOWN</button>
 
-	<button class="button confirm" on:click={handleConfirm} disabled={timeout}>CONFIRM</button>
+	<input type="submit" id="confirm" value="CONFIRM" class="button confirm" disabled={isDisabled} />
 
 	<div class="input-container x">
 		<label for="x">x:</label>
-		<input type="number" id="x" bind:value={x} min="0" max={cols} step="1" />
+		<input type="number" id="x" name="x" bind:value={x} min="0" max={cols} step="1" />
 	</div>
 
 	<div class="input-container y">
 		<label for="y">y:</label>
-		<input type="number" id="y" bind:value={y} min="0" max={rows} step="1" />
+		<input type="number" id="y" name="y" bind:value={y} min="0" max={rows} step="1" />
 	</div>
 
 	<div class="picker">
 		<ColorPicker bind:hex={color} isDialog={false} --picker-height="100px" --picker-width="130px" />
 	</div>
 
-	<div class="color" style="--color:{color};"></div>
-
-	<div class="input-container">
-		<label for="timeout">{Date}</label>
+	<div class="color" style="--color:{color};">
+		<input type="hidden" name="hex" value={color} />
 	</div>
-</div>
+	<div class="input-container timeout">
+		<CountDown lastPixel={data.lastPixel} timeout={data.timeout} />
+	</div>
+</form>
 
 <style>
 	.container {

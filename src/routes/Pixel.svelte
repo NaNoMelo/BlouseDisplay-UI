@@ -13,7 +13,7 @@
 	on:click={() => {
 		selectedX = x;
 		selectedY = y;
-		console.log(`Selected pixel: (${selectedX}, ${selectedY}) with color ${hex}`);
+		//console.log(`Selected pixel: (${selectedX}, ${selectedY}) with color ${hex}`);
 	}}
 ></button>
 
@@ -26,6 +26,6 @@
 	}
 
 	.pixel.selected {
-		border: 3px solid red; /* Change border to indicate selection */
+		border: 3px solid red;
 	}
 </style>

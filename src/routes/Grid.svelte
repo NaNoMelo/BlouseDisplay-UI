@@ -3,7 +3,7 @@
 
 	let cols = 32;
 	let rows = 16;
-	let grid: string[][] = Array(rows).fill(Array(cols).fill('#000000'));
+	let grid: string[][] = Array(cols).fill(Array(rows).fill('#000000'));
 	let selectedX: number = 0;
 	let selectedY: number = 0;
 
@@ -12,10 +12,10 @@
 
 <div class="grid-container">
 	<div class="grid" style="--rows:{rows};--cols:{cols};">
-		{#each grid as row, rowIndex}
+		{#each Array.from({ length: rows }) as _, rowIndex}
 			<div class="row">
-				{#each row as color, colIndex}
-					<Pixel bind:selectedX bind:selectedY {color} x={colIndex} y={rowIndex} />
+				{#each grid as column, colIndex}
+					<Pixel bind:selectedX bind:selectedY color={column[rowIndex]} x={colIndex} y={rowIndex} />
 				{/each}
 			</div>
 		{/each}
