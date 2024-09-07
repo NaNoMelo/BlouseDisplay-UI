@@ -37,13 +37,14 @@ mqttClient.on('message', (topic, message) => {
 });
 
 export const load = async ({ cookies }: { cookies: Cookies }) => {
-	const timeout = cookies.get('timeout');
+	let timeout = Number(cookies.get('timeout'));
 	if (!timeout) {
-		cookies.set('timeout', '0', { path: '/' });
+		cookies.set('timeout', Date.now().toString(), { path: '/' });
+  timeout = Date.now();
 	}
 	await new Promise((resolve) => setTimeout(resolve, 1000));
 	return {
-		lastPixel: Number(cookies.get('timeout')) || 0,
+		lastPixel: timeout || 0,
 		grid: grid,
 		timeout: Number(TIMEOUT)
 	};
