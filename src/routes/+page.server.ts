@@ -32,19 +32,23 @@ mqttClient.on('message', (topic, message) => {
 		return;
 	}
 
-	console.log(x, y, message.toString());
+	//console.log(x, y, message.toString());
 	grid[x][y] = message.toString();
 });
 
 export const load = async ({ cookies }: { cookies: Cookies }) => {
+	//console.log('Loading');
 	let timeout = Number(cookies.get('timeout'));
+	//console.log(timeout);
 	if (!timeout) {
-		cookies.set('timeout', Date.now().toString(), { path: '/' });
-  timeout = Date.now();
+		//console.log('load Setting timeout');
+		cookies.set('timeout', Date.now().toString(), { path: '/', maxAge: 60 * 60 * 24 * 365 });
+		//console.log(cookies.get('timeout'));
+		timeout = Date.now();
 	}
 	await new Promise((resolve) => setTimeout(resolve, 1000));
 	return {
-		lastPixel: timeout || 0,
+		lastPixel: timeout,
 		grid: grid,
 		timeout: Number(TIMEOUT)
 	};
@@ -59,7 +63,7 @@ export const actions: Actions = {
 		}
 		if (Number(timeout) + Number(TIMEOUT) < Date.now()) {
 			const data = await request.formData();
-			console.log(data);
+			//console.log(data);
 			const { x, y, hex } = Object.fromEntries(data);
 			mqttClient.publish(`blouse/leds/${x}/${y}`, hex.toString() || '#000000', { retain: true });
 

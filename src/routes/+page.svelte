@@ -8,7 +8,7 @@
 	let selectedY = 0;
 	let rows = 16;
 	let cols = 32;
-	$: console.log(data.grid);
+	//$: console.log(data.grid);
 </script>
 
 <Grid bind:selectedX bind:selectedY {cols} {rows} bind:grid={data.grid} />
