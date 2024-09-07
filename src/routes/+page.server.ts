@@ -37,7 +37,7 @@ mqttClient.on('message', (topic, message) => {
 });
 
 export const load = async ({ cookies }: { cookies: Cookies }) => {
-	const timeout = Number(cookies.get('timeout'));
+	let timeout = Number(cookies.get('timeout'));
 	if (!timeout) {
 		cookies.set('timeout', Date.now().toString(), { path: '/' });
   timeout = Date.now();
