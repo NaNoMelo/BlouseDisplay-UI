@@ -15,10 +15,11 @@ FROM node:22-alpine AS production
 
 WORKDIR /app
 
-COPY --from=build /app/build build/
-COPY --from=build /app/package.json .
+COPY package.json .
 
 RUN npm install --omit=dev
+
+COPY --from=build /app/build build/
 
 EXPOSE 3000
 

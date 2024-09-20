@@ -1,11 +1,11 @@
 import type { Cookies } from '@sveltejs/kit';
 import type { Actions } from '@sveltejs/kit';
 import mqtt from 'mqtt';
-import { MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, TIMEOUT } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
-const mqttClient = mqtt.connect(`${MQTT_HOST}:${MQTT_PORT}`, {
-	username: MQTT_USER,
-	password: MQTT_PASS
+const mqttClient = mqtt.connect(`${env.MQTT_HOST}:${env.MQTT_PORT}`, {
+	username: env.MQTT_USER,
+	password: env.MQTT_PASS
 });
 mqttClient.on('error', (e) => {
 	console.log(e);
@@ -50,7 +50,7 @@ export const load = async ({ cookies }: { cookies: Cookies }) => {
 	return {
 		lastPixel: timeout,
 		grid: grid,
-		timeout: Number(TIMEOUT)
+		timeout: Number(env.TIMEOUT)
 	};
 };
 
@@ -61,7 +61,7 @@ export const actions: Actions = {
 			cookies.set('timeout', '0', { path: '/' });
 			timeout = '0';
 		}
-		if (Number(timeout) + Number(TIMEOUT) < Date.now()) {
+		if (Number(timeout) + Number(env.TIMEOUT) < Date.now()) {
 			const data = await request.formData();
 			//console.log(data);
 			const { x, y, hex } = Object.fromEntries(data);
@@ -73,7 +73,7 @@ export const actions: Actions = {
 		return {
 			lastPixel: Number(cookies.get('timeout')) || 0,
 			grid: grid,
-			timeout: Number(TIMEOUT)
+			timeout: Number(env.TIMEOUT)
 		};
 	}
 };
