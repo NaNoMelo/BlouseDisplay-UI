@@ -12,6 +12,7 @@
 
 <div class="grid-container">
 	<div class="grid" style="--rows:{rows};--cols:{cols};">
+		<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 		{#each Array.from({ length: rows }) as _, rowIndex}
 			<div class="row">
 				{#each grid as column, colIndex}
