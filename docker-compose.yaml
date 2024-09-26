@@ -1,0 +1,17 @@
+services:
+  ui:
+    build:
+      context: https://github.com/NaNoMelo/BlouseDisplay-UI.git
+      tags:
+        - 'blouse-ui:latest'
+    pull_policy: 'build'
+
+    container_name: blouse-ui
+
+    env_file:
+      - .env
+
+    ports:
+      - 3000:3000
+
+    restart: 'unless-stopped'
